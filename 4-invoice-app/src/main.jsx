@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { InvoiceApp } from './components/InvoiceApp';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <React.StrictMode>
     <InvoiceApp />
-  </StrictMode>,
+  </React.StrictMode>
 )
