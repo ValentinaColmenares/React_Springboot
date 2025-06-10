@@ -1,4 +1,3 @@
-import Proptypes from 'prop-types';
 export const InvoiceView = ({id, name}) => {
   
 	validateProps(id, name);
