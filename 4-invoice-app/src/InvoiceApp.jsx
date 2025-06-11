@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getInvoice } from "./services/getInvoice"
 import { ClientView } from "./components/ClientView";
 import { CompanyView } from "./components/CompanyView";
@@ -6,69 +6,118 @@ import { InvoiceView } from "./components/InvoiceView";
 import { ListItemsView } from "./components/ListItemsView";
 import { TotalView } from "./components/TotalView";
 
+const invoiceInitial = {
+	id: 0,
+	name: '',
+	client: {
+		name: '',
+		lastName: '',
+		address: {
+			country: '',
+			city: '',
+			street: '',
+			number: 0
+		}
+	},
+	company: {
+		name: '',
+		fiscalNumber: 0,
+	},
+	items: []
+};
+
 export const InvoiceApp = () => {
-
-	const { total, id, name, client, company, items: itemsInitial} = getInvoice();
-	
-	const [productValue, setProductValue] = useState('');
-	const [priceValue, setPriceValue] = useState('');
-	const [quantityValue, setQuantityValue] = useState('');
-
-	const [items, setItems] = useState(itemsInitial);
 
 	const [counter, setCounter] = useState(4);
 
-	const onProductChange = ({ target }) => {
-		console.log(target.value);
-		setProductValue(target.value);
+	const [invoice, setInvoice] = useState(invoiceInitial);
+	
+	const [items, setItems] = useState([]);
+
+	const [total, setTotal] = useState(0);
+
+	const [formItemsState, setFormItemsState] = useState({
+		product: '',
+		price: '',
+		quantity: '',
+	});
+
+	const { id, name, client, company} = invoice;
+
+	const { product, price, quantity } = formItemsState;
+
+	useEffect(() => {
+		const data = getInvoice();
+		console.log(data);
+		setInvoice(data);
+		setItems(data.items);
+		setTotal(data.total)
+	}, []);
+
+	useEffect(() => {
+		// console.log('el precio cambió!');
+	}, [price]);
+
+	useEffect(() => {
+		// console.log('el formItemsState cambió!');
+	}, [formItemsState]);
+	
+	useEffect(() => {
+		// console.log('el counter cambió!');
+	}, [counter]);
+	
+	useEffect(() => {
+		setTotal(total + +price);
+		// console.log('los items cambiaron!');
+	}, [items]);
+
+	const onInputChange = ({ target: {name, value} }) => {
+		// console.log(value);
+		// console.log(name);
+		setFormItemsState({
+			...formItemsState,
+			[name]: value
+		});
 	}
 
-	const onPriceChange = ({ target }) => {
-		console.log(target.value);
-		setPriceValue(target.value);
-	}
-
-	const onQuantityChange = ({ target }) => {
-		console.log(target.value);
-		setQuantityValue(target.value);
-	}
-
-	const onInvoiceItemsSubmit = () =>  {
+	const onInvoiceItemsSubmit = (event) =>  {
 		event.preventDefault();
 
-		if(productValue.trim().length <= 1){
+		if(product.trim().length <= 1){
 			alert('Error el producto debe tener al menos dos caracteres')
 			return;
 		}
-		if(priceValue.trim().length <= 1){
+		if(price.trim().length <= 1){
 			alert('Error el precio debe tener al menos dos caracteres')
 			return;
 		}
-		if(isNaN(priceValue.trim())){
+		if(isNaN(price.trim())){
 			alert('Error el precio no es un numero')
 			return;
 		}
-		if(quantityValue.trim().length < 1){
+		if(quantity.trim().length < 1){
 			alert('Error la cantidad debe tener al menos un caracter')
 			return;
 		}
-		if(quantityValue.trim() < 1){
+		if(quantity.trim() < 1){
 			alert('Error la cantidad debe ser mayor a 0')
 			return;
 		}
-		if(isNaN(quantityValue.trim())){
+		if(isNaN(quantity.trim())){
 			alert('Error la cantidad no es un numero')
 			return;
 		}
 		setItems([...items, {
 			id: counter, 
-			product: productValue.trim(), 
-			price: +priceValue.trim(), 
-			quantity: parseInt(quantityValue.trim(), 10)
+			product: product.trim(), 
+			price: +price.trim(), 
+			quantity: parseInt(quantity.trim(), 10)
 		}]);
-		setProductValue('');
-		setPriceValue('');
-		setQuantityValue('');
+		setFormItemsState({
+			product: '',
+			price: '',
+			quantity: '',
+		});
 		setCounter(counter + 1);
 	}
 
@@ -99,21 +148,21 @@ export const InvoiceApp = () => {
 						<input 
 							type="text" 
 							name="product" 
-							value={ productValue }
+							value={ product }
 							placeholder="Producto" 
-							className="form-control m-3" onChange={ onProductChange }/>
+							className="form-control m-3" onChange={ onInputChange }/>
 						<input 
 							type="text" 
 							name="price" 
-							value={ priceValue }
+							value={ price }
 							placeholder="Precio" 
-							className="form-control m-3" onChange={event => onPriceChange(event)}/>
+							className="form-control m-3" onChange={event => onInputChange(event)}/>
 						<input 
 							type="text" 
 							name="quantity" 
-							value={ quantityValue }
+							value={ quantity }
 							placeholder="Cantidad" 
-							className="form-control m-3" onChange={ onQuantityChange }/>
+							className="form-control m-3" onChange={ onInputChange }/>
 						<button 
 							type="submit" 
 							className="btn btn-primary m-3">
