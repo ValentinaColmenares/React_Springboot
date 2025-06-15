@@ -1,4 +1,4 @@
-export const RowItemView = ({product, price, quantity}) => {
+export const RowItemView = ({id, product, price, quantity, handlerDeleteItem}) => {
 	
 	validateProps(product, price, quantity);
 	return (
@@ -7,6 +7,9 @@ export const RowItemView = ({product, price, quantity}) => {
 			<td>{ product }</td>
 			<td>{ price }</td>
 			<td>{ quantity }</td>
+			<td><button 
+				className='btn btn-danger'
+				onClick={() => handlerDeleteItem(id)}>eliminar</button></td>
 			</tr>
 		</>
 	)
