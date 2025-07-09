@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.valentina.backend.usersapp.backend_usersapp.models.entities.User;
+import com.valentina.backend.usersapp.backend_usersapp.models.request.UserRequest;
 import com.valentina.backend.usersapp.backend_usersapp.services.UserService;
 
 import jakarta.validation.Valid;
@@ -57,7 +58,7 @@ public class UserController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody UserRequest user, BindingResult result, @PathVariable Long id) {
         if(result.hasErrors()){
             return validation(result);
         }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.valentina.backend.usersapp.backend_usersapp.models.entities.User;
-import com.valentina.backend.usersapp.backend_usersapp.models.entities.UserRequest;
+import com.valentina.backend.usersapp.backend_usersapp.models.request.UserRequest;
 
 public interface UserService {
 
