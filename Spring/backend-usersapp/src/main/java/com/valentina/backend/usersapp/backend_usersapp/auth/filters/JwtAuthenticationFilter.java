@@ -3,6 +3,7 @@ package com.valentina.backend.usersapp.backend_usersapp.auth.filters;
 import java.io.IOException;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -37,6 +38,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 username = user.getUsername();
                 password = user.getPassword();
                 
+                logger.info("Username desde request InputStream (raw) " + username);
+                logger.info("Password desde request InputStream (raw) " + password);
             } catch (StreamReadException e) {
                 e.printStackTrace();
             } catch (DatabindException e) {
@@ -44,8 +47,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            
-            return authenticationManager.authenticate(null);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+            return authenticationManager.authenticate(authToken);
     }
 
     @Override
